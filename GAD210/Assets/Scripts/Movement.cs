@@ -28,11 +28,11 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKey(moveLeft))
         {
-            rb.velocity = -transform.right * moveSpeed;
+            rb.velocity += -Vector2.right * moveSpeed;
         }
         if (Input.GetKey(moveRight))
         {
-            rb.velocity = transform.right * moveSpeed;
+            rb.velocity += Vector2.right * moveSpeed;
         }
         if (Input.GetKeyDown(moveUp) && isGrounded)
         {
@@ -80,7 +80,7 @@ public class Movement : MonoBehaviour
         moveUp = keyBind;
 
         Debug.Log($"Left: {moveLeft}");
-        Debug.Log($"Left: {moveRight}");
-        Debug.Log($"Left: {moveUp}");
+        Debug.Log($"Right: {moveRight}");
+        Debug.Log($"Up: {moveUp}");
     }
 }
