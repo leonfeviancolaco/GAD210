@@ -17,6 +17,9 @@ public class Movement : MonoBehaviour
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private bool isGrounded = true;
 
+    [Header("Debugging")]
+    [SerializeField] private bool isDebugging = false;
+    /*
     [Header("Fall Through Platform")]
     [SerializeField] private GameObject platform;
     [SerializeField] private float timer = 0f;
@@ -24,6 +27,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private float velocityThreshold = 0.2f;
     [SerializeField] private float gracePeriod = 1f;
     [SerializeField] private bool isFalling = false;
+    */
 
     // Start is called before the first frame update
     void Start()
@@ -34,88 +38,70 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
+        // Movement
         if (Input.GetKey(moveLeft))
         {
             rb.velocity += -Vector2.right * moveSpeed;
+            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
         }
         if (Input.GetKey(moveRight))
         {
             rb.velocity += Vector2.right * moveSpeed;
+            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
         }
         if (Input.GetKeyDown(moveUp) && isGrounded)
         {
-            rb.AddForce(transform.up * jumpForce, ForceMode2D.Force);
+            rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
         }
-
-        rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
-        if (isFalling)
-        {
-            platform.SetActive(false);
-            timer += Time.deltaTime;
-            if (timer >= fallThroughTime)
-            {
-                timer = 0f;
-                platform.SetActive(true);
-            }
-        }
-        else if (isGrounded)
-        {
-            if (rb.velocity.magnitude <= velocityThreshold)
-            {
-                timer += Time.deltaTime;
-                if (timer >= gracePeriod)
-                {
-                    isFalling = true;
-                    timer = 0f;
-                }
-            }
-            else timer = 0f;
-        }
-        
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.transform.tag == "Ground")
         {
-            isGrounded = true;
-            platform = collision.gameObject;
+            isGrounded = true; // We can jump again
         }
-        //maxSpeed = 10f;
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        isGrounded = false;
-        //maxSpeed = 500f;
+        isGrounded = false; // Don't allow double jumps
     }
 
     public void ChangeKeybinds()
     {
         // Reset all keybinds
-        moveLeft = KeyCode.None;
-        moveRight = KeyCode.None;
-        moveUp = KeyCode.None;
+        moveLeft = KeyCode.A;
+        moveRight = KeyCode.D;
+        moveUp = KeyCode.S;
 
-        // Set Left keybind
-        KeyCode keyBind = keys[Random.Range(0, keys.Count)];
-        moveLeft = keyBind;
+        if (!isDebugging)
+        {
+            // Set Left keybind
+            KeyCode keyBind = keys[Random.Range(0, keys.Count)];
+            moveLeft = keyBind;
+
+            // Set right keybind
+            keyBind = keys[Random.Range(0, keys.Count)];
+            while (keyBind == moveLeft)
+            {
+                keyBind = keys[Random.Range(0, keys.Count)];
+            }
+            moveRight = keyBind;
+
+            // Set up keybind
+            keyBind = keys[Random.Range(0, keys.Count)];
+            while (keyBind == moveRight || keyBind == moveLeft)
+            {
+                keyBind = keys[Random.Range(0, keys.Count)];
+            }
+            moveUp = keyBind;
+        }
+        else
+        {
+            return;
+        }
         
-        // Set right keybind
-        keyBind = keys[Random.Range(0, keys.Count)];
-        while (keyBind == moveLeft)
-        {
-            keyBind = keys[Random.Range(0, keys.Count)];
-        }
-        moveRight = keyBind;
-
-        // Set up keybind
-        keyBind = keys[Random.Range(0, keys.Count)];
-        while (keyBind == moveRight || keyBind == moveLeft)
-        {
-            keyBind = keys[Random.Range(0, keys.Count)];
-        }
-        moveUp = keyBind;
 
         /*
         Debug.Log($"Left: {moveLeft}");
