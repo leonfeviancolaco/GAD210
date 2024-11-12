@@ -98,8 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4588d6b4d3d0b4a4cb2710cb41d0a4ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coin: {fileID: 8314690269522686450}
   ScoreText: {fileID: 0}
+  spawnLoc1: {x: 0, y: 0}
+  spawnLoc2: {x: 16.7, y: -2.4}
+  spawnLoc3: {x: -11.3, y: -6.6}
   gameEvent: {fileID: 11400000, guid: 5129ec860de73fd40aba7e4387bf0893, type: 2}
 --- !u!61 &7659644950788388373
 BoxCollider2D:
