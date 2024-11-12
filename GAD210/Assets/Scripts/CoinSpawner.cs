@@ -8,9 +8,7 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class CoinSpawner : MonoBehaviour
 {
-    private int Score = 0;
-    [SerializeField] GameObject coin;
-
+    public int Score = 0;
     [SerializeField] TMP_Text ScoreText;
 
     private int SpawnLoc;
@@ -32,25 +30,30 @@ public class CoinSpawner : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Destroy(gameObject);
+        //Destroy(gameObject);
         Debug.Log("Coin Collected");
         Score++;
-        //ScoreText.text = $"Score: {Score}";
-        SpawnLoc = Random.Range(1, 3);
-
+        UpdateScoreText();
+        SpawnLoc = Random.Range(1, 4);
+        Debug.Log(SpawnLoc);
         if (SpawnLoc == 1)
         {
-            GameObject rb = Instantiate(coin, spawnLoc1, Quaternion.Euler(0,0,0));
+            transform.position = spawnLoc1;
         }
         else if (SpawnLoc == 2)
         {
-            GameObject rb = Instantiate(coin, spawnLoc2, Quaternion.Euler(0, 0, 0));
+            transform.position = spawnLoc2;
         }
         else if (SpawnLoc == 3)
         {
-            GameObject rb = Instantiate(coin, spawnLoc3, Quaternion.Euler(0, 0, 0));
+            transform.position = spawnLoc3;
         }
 
         gameEvent.Raise();
+    }
+
+    public void UpdateScoreText()
+    {
+        ScoreText.text = $"Score: {Score}";
     }
 }

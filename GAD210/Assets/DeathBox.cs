@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class DeathBox : MonoBehaviour
 {
-    public GameEventScriptable gameEventScriptable;
+    public CoinSpawner Spawner;
     private void OnCollisionEnter2D(Collision2D collision)
     {
         collision.transform.position = Vector2.zero;
-        gameEventScriptable.Raise();
+        Spawner.Score = 0;
+        Spawner.UpdateScoreText();
     }
 }
