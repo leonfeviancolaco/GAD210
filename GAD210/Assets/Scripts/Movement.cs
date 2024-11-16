@@ -12,10 +12,15 @@ public class Movement : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Vector2 move;
     [SerializeField] private float moveSpeed = 1f;
     [SerializeField] private float maxSpeed = 2f;
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private bool isGrounded = true;
+    [SerializeField] private bool isJumping = false;
+    [SerializeField] private bool isFalling = false;
+    [SerializeField] private BoxCollider2D groundCheck;
+    [SerializeField] private LayerMask layerMask;
 
     [Header("Debugging")]
     [SerializeField] private bool isDebugging = false;
@@ -38,34 +43,44 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        // Movement
+        float horizontal = 0f;
+
         if (Input.GetKey(moveLeft))
         {
-            rb.velocity += -Vector2.right * moveSpeed;
-            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
+            horizontal = -moveSpeed;
         }
         if (Input.GetKey(moveRight))
         {
-            rb.velocity += Vector2.right * moveSpeed;
-            rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxSpeed);
+            horizontal = moveSpeed;
         }
         if (Input.GetKeyDown(moveUp) && isGrounded)
         {
-            rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+            rb.AddForce(new Vector2 (horizontal, jumpForce), ForceMode2D.Impulse);
         }
+        GroundCheck();
+
+        rb.velocity = new Vector2 (horizontal, rb.velocity.y);
     }
 
+    /*
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.transform.tag == "Ground")
         {
             isGrounded = true; // We can jump again
+            isJumping = false;
         }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         isGrounded = false; // Don't allow double jumps
+    }
+    */
+
+    public void GroundCheck()
+    {
+        isGrounded = Physics2D.OverlapAreaAll(groundCheck.bounds.min, groundCheck.bounds.max, layerMask).Length > 0;
     }
 
     public void ChangeKeybinds()
